@@ -1,13 +1,13 @@
+import { Avatar } from "./Avatar";
+import { Comment } from "./Comment";
+
 export function Post(props) {
 	return (
 		<article className="bg-gray-800 rounded-xl p-10 mt-8 first:mt-0">
 			<header className="flex items-center justify-between">
 				<div className="flex items-center">
-					<img
-						src="https://github.com/renanrcp16.png"
-						className="w-12 h-12 rounded-xl border-gray-700 border-2 outline outline-2 outline-green-600 box-content mr-3 items-center"
-					/>
-					<div className="h-fit">
+					<Avatar src="https://github.com/renanrcp16.png" />
+					<div className="h-fit ml-3">
 						<strong className="flex center gap-4 leading-[1.6] text-gray-100">Renan Corrêa Pedroso</strong>
 						<span className="flex flex-col text-gray-400 text-[0.875rem] leading-[1.6]">Web Developer</span>
 					</div>
@@ -32,6 +32,12 @@ export function Post(props) {
 					<button className="px-6 py-4 mt-4 rounded-xl border-0 bg-green-600 text-white font-bold cursor-pointer hover:bg-green-400 transition" type="submit">Publicar</button>
 				</footer>
 			</form>
+
+			<div className="mt-8">
+				<Comment />
+				<Comment />
+				<Comment />
+			</div>
 		</article>
 	)
 }
