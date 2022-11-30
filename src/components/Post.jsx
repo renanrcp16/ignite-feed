@@ -1,28 +1,31 @@
+import { format, formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Avatar } from "./Avatar";
 import { Comment } from "./Comment";
 
-export function Post(props) {
+export function Post({ author, publishedAt, content }) {
+	const publishedDateFormatted = format(publishedAt, "dd 'de' LLLL 'às' HH:mm'h'", { locale: ptBR })
+	const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true })
+
 	return (
 		<article className="bg-gray-800 rounded-xl p-10 mt-8 first:mt-0">
 			<header className="flex items-center justify-between">
 				<div className="flex items-center">
-					<Avatar src="https://github.com/renanrcp16.png" />
+					<Avatar src={author.avatarUrl} />
 					<div className="h-fit ml-3">
-						<strong className="flex center gap-4 leading-[1.6] text-gray-100">Renan Corrêa Pedroso</strong>
-						<span className="flex flex-col text-gray-400 text-[0.875rem] leading-[1.6]">Web Developer</span>
+						<strong className="flex center gap-4 leading-[1.6] text-gray-100">{author.name}</strong>
+						<span className="flex flex-col text-gray-400 text-[0.875rem] leading-[1.6]">{author.role}</span>
 					</div>
 				</div>
-				<time title="29 de novembro às 14:43" className="text-[0.875rem] text-gray-400" dateTime="2022-11-29 14:43:00">Publicado há 1h</time>
+				<time title={publishedDateFormatted} className="text-[0.875rem] text-gray-400" dateTime={publishedAt.toLocaleString()}>{publishedDateRelativeToNow}</time>
 			</header>
 			<div className="leading-[1.6] text-gray-300 mt-6">
-				<p className="mt-4">Fala galeraa 👋</p>
-				<p className="mt-4">Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀</p>
-				<p className="mt-4"><a className="font-bold text-green-600 hover:text-green-500" href="">jane.design/doctorcare</a></p>
-				<p className="mt-4">
-					<a className="font-bold text-green-600 hover:text-green-500 mr-1" href="">#novoprojeto</a>
-					<a className="font-bold text-green-600 hover:text-green-500 mr-1" href="">#nlw</a>
-					<a className="font-bold text-green-600 hover:text-green-500 mr-1" href="">#rocketseat</a>
-				</p>
+				{content.map(line => {
+					if (line.type === 'paragraph') {
+						return <p className="mt-4">{line.content}</p>
+					} else if (line.type === 'link')
+						return <p className="mt-4"><a className="font-bold text-green-600 hover:text-green-500 mr-1" href="">{line.content}</a></p>
+				})}
 			</div>
 
 			<form className="w-full mt-6 pt-6 border-t-2 border-gray-600 group">
