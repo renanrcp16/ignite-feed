@@ -12,6 +12,8 @@ export function Post({ author, publishedAt, content }) {
 	const [comments, setComments] = useState(['Comentário padrão'])
 	const [newCommentText, setNewCommentText] = useState('')
 
+	const isNewCommentEmpty = newCommentText.length === 0
+
 
 	function handleCreateNewComment() {
 		event.preventDefault()
@@ -21,6 +23,7 @@ export function Post({ author, publishedAt, content }) {
 	}
 
 	function handleNewCommentChange() {
+		event.target.setCustomValidity('')
 		setNewCommentText(event.target.value)
 	}
 
@@ -30,6 +33,10 @@ export function Post({ author, publishedAt, content }) {
 		})
 
 		setComments(commentsWithoutDeletedOne)
+	}
+
+	function handleNewInvalidComment() {
+		event.target.setCustomValidity('Esse campo é obrigatório!')
 	}
 
 	return (
@@ -55,11 +62,23 @@ export function Post({ author, publishedAt, content }) {
 
 			<form className="w-full mt-6 pt-6 border-t-2 border-gray-600 group" onSubmit={handleCreateNewComment}>
 				<strong className="leading-[1.6] text-gray-100">Deixe seu feedback</strong>
-				<textarea onChange={handleNewCommentChange} value={newCommentText} className="w-full bg-gray-900 border-0 resize-none h-24 rounded-xl text-gray-100 mt-1 leading-[1.4] p-4" placeholder="Deixe seu comentário" />
+				<textarea 
+					onChange={handleNewCommentChange} 
+					value={newCommentText} 
+					className="w-full bg-gray-900 border-0 resize-none h-24 rounded-xl text-gray-100 mt-1 leading-[1.4] p-4" 
+					placeholder="Deixe seu comentário" 
+					onInvalid={handleNewInvalidComment}
+					required
+				/>
 				<footer className="invisible max-h-0 group-focus-within:visible group-focus-within:max-h-[none]">
 					<button 
-						className="px-6 py-4 mt-4 rounded-xl border-0 bg-green-600 text-white font-bold cursor-pointer hover:bg-green-400 transition" 
+						className="
+							px-6 py-4 mt-4 rounded-xl border-0 bg-green-600 text-white font-bold 
+							cursor-pointer [&:not(:disabled)]:hover:bg-green-400 transition 
+							disabled:opacity-50 disabled:cursor-not-allowed
+						" 
 						type="submit"
+						disabled={isNewCommentEmpty}
 					>
 						Publicar
 					</button>
