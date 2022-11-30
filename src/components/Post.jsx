@@ -9,7 +9,7 @@ export function Post({ author, publishedAt, content }) {
 	const publishedDateFormatted = format(publishedAt, "dd 'de' LLLL 'às' HH:mm'h'", { locale: ptBR })
 	const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true })
 
-	const [comments, setComments] = useState([])
+	const [comments, setComments] = useState(['Comentário padrão'])
 	const [newCommentText, setNewCommentText] = useState('')
 
 
@@ -22,6 +22,14 @@ export function Post({ author, publishedAt, content }) {
 
 	function handleNewCommentChange() {
 		setNewCommentText(event.target.value)
+	}
+
+	function deleteComment(commentToDelete) {
+		const commentsWithoutDeletedOne = comments.filter(comment => {
+			return comment !== commentToDelete
+		})
+
+		setComments(commentsWithoutDeletedOne)
 	}
 
 	return (
@@ -39,9 +47,9 @@ export function Post({ author, publishedAt, content }) {
 			<div className="leading-[1.6] text-gray-300 mt-6">
 				{content.map(line => {
 					if (line.type === 'paragraph') {
-						return <p className="mt-4">{line.content}</p>
+						return <p key={line.content} className="mt-4">{line.content}</p>
 					} else if (line.type === 'link')
-						return <p className="mt-4"><a className="font-bold text-green-600 hover:text-green-500 mr-1" href="">{line.content}</a></p>
+						return <p key={line.content} className="mt-4"><a className="font-bold text-green-600 hover:text-green-500 mr-1" href="">{line.content}</a></p>
 				})}
 			</div>
 
@@ -49,13 +57,24 @@ export function Post({ author, publishedAt, content }) {
 				<strong className="leading-[1.6] text-gray-100">Deixe seu feedback</strong>
 				<textarea onChange={handleNewCommentChange} value={newCommentText} className="w-full bg-gray-900 border-0 resize-none h-24 rounded-xl text-gray-100 mt-1 leading-[1.4] p-4" placeholder="Deixe seu comentário" />
 				<footer className="invisible max-h-0 group-focus-within:visible group-focus-within:max-h-[none]">
-					<button className="px-6 py-4 mt-4 rounded-xl border-0 bg-green-600 text-white font-bold cursor-pointer hover:bg-green-400 transition" type="submit">Publicar</button>
+					<button 
+						className="px-6 py-4 mt-4 rounded-xl border-0 bg-green-600 text-white font-bold cursor-pointer hover:bg-green-400 transition" 
+						type="submit"
+					>
+						Publicar
+					</button>
 				</footer>
 			</form>
 
 			<div className="mt-8">
 				{comments.map(comment => {
-					return <Comment content={comment}/>
+					return(
+						<Comment 
+							key={comment} 
+							content={comment} 
+							onDeleteComment={deleteComment}
+						/>
+					)
 				})}
 			</div>
 		</article>
